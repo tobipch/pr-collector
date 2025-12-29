@@ -1,0 +1,10 @@
+{
+    "type": "module",
+    "scripts": {
+      "start": "node server.js",
+      "build:data": "node fetchAndBuild.js"
+    },
+    "dependencies": {
+      "express": "^4.19.2"
+    }
+  }
