@@ -1,64 +1,17 @@
-<script>
-    async function loadData() {
-      const res = await fetch('/data/prs.json');
-      return res.json();
-    }
-    
-    // formatTime stays EXACTLY as before
-    function formatTime(centiseconds) {
-      if (typeof centiseconds !== 'number' || centiseconds <= 0) return '-';
-      const totalSeconds = Math.floor(centiseconds / 100);
-      const centis = centiseconds % 100;
-      const minutes = Math.floor(totalSeconds / 60);
-      const seconds = totalSeconds % 60;
-      return minutes > 0
-        ? `${minutes}:${seconds.toString().padStart(2,'0')}.${centis.toString().padStart(2,'0')}`
-        : `${seconds}.${centis.toString().padStart(2,'0')}`;
-    }
-    
-    document.getElementById('load').onclick = async () => {
-      const data = await loadData();
-      const badges = document.getElementById('badges-container');
-      const output = document.getElementById('output');
-    
-      badges.innerHTML = '';
-      output.innerHTML = '';
-    
-      for (const wcaId in data) {
-        const { name, prs } = data[wcaId];
-    
-        const badge = document.createElement('div');
-        badge.className = 'person-badge';
-        badge.innerHTML = `${name.toUpperCase()} <span class="pr-count">${prs.length}</span>`;
-        badge.onclick = () =>
-          document.getElementById(`person-${wcaId}`)?.scrollIntoView({ behavior: 'smooth' });
-        badges.appendChild(badge);
-    
-        const group = document.createElement('div');
-        group.className = 'person-group';
-        group.id = `person-${wcaId}`;
-    
-        prs.forEach(pr => {
-          const card = document.createElement('a');
-          card.className = 'match-card';
-          card.href = `https://live.worldcubeassociation.org/competitions/${pr.competitionId}/competitors/${pr.personIntId}`;
-          card.target = '_blank';
-          card.innerHTML = `
-            <div class="match-text">
-              <div class="match-header">
-                ${name} – ${pr.event} ${formatTime(pr.time)} ${pr.type}
-              </div>
-              <div class="match-info">
-                WR: ${pr.wr} · CR: ${pr.cr} · NR: ${pr.nr}
-              </div>
-            </div>
-            <span class="cubing-icon event-${pr.event} event-icon"></span>
-          `;
-          group.appendChild(card);
-        });
-    
-        output.appendChild(group);
-      }
-    };
-    </script>
-    
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WCA PR Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.cubing.net/v0/css/@cubing/icons/css">
+</head>
+<body>
+  <button id="load">PRs laden</button>
+  <div id="badges-container"></div>
+  <div id="output">Laden...</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
