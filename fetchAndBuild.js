@@ -36,10 +36,14 @@ async function fetchJson(url) {
   const wcaIds = new Set();
 
   for (const comp of competitions) {
-    const results = await fetchJson(`${API}/competitions/${comp.id}/results`);
-    const ch = results.filter(r => r.country_iso2 === 'CH');
-    compResults[comp.id] = ch;
-    ch.forEach(r => wcaIds.add(r.wca_id));
+    try {
+      const results = await fetchJson(`${API}/competitions/${comp.id}/results`);
+      const ch = results.filter(r => r.country_iso2 === 'CH');
+      compResults[comp.id] = ch;
+      ch.forEach(r => wcaIds.add(r.wca_id));
+    } catch (e) {
+      console.warn(`Fehler beim Laden von Competition ${comp.id}:`, e);
+    }
   }
 
   // 3. persons
